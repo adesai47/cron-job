@@ -1,23 +1,38 @@
-import Mailjet from 'node-mailjet';
+import nodemailer from 'nodemailer';
 
 const sendEmail = async () => {
-  const apiKey = '7e69a780c0200c8a4864d6b7d59e885f';
-  const apiSecret = '0a9933a7d640c0ab84fe2b48fb6565f4';
-  const mailjetClient = new Mailjet({ apiKey, apiSecret });
+  // Create a transporter using SMTP
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'aadityadesai09@gmail.com',
+      // Replace this with an app-specific password from Google Account settings
+      pass: 'mvin ukln rwip njec'
 
-  const request = mailjetClient.post("send", { version: 'v3.1' }).request({
-    Messages: [
-      {
-        From: { Email: "aadityadesai19@gmail.com", Name: "Weather Bot" },
-        To: [{ Email: "aadityadesai19@gmail.com" }],
-        Subject: "Daily Weather Reminder",
-        TextPart: "Take your umbrella today!",
-      },
-    ],
+    }
   });
 
+  // Define email options
+  const mailOptions = {
+    from: '"Weather Bot" <aadityadesai09@gmail.com>',
+    to: 'aadityadesai09@gmail.com',
+    subject: 'Daily Weather Reminder',
+    html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f0f8ff;">
+        <h1 style="color: #4169e1;">⛅ Daily Weather Alert! ☔</h1>
+        <p style="font-size: 18px;">Hey there! Just a friendly reminder:</p>
+        <div style="background-color: #ffffff; padding: 15px; border-radius: 10px; margin: 20px 0;">
+          <h2 style="color: #4169e1;">🌧️ Don't forget your umbrella today! 🌂</h2>
+          <p style="font-size: 16px;">Stay dry and have a great day!</p>
+        </div>
+        <p style="color: #666666; font-size: 14px;">Your friendly neighborhood Weather Bot 🤖</p>
+      </div>
+    `,
+    text: 'Take your umbrella today!' // Plain text fallback
+  };
+
   try {
-    await request;
+    await transporter.sendMail(mailOptions);
     console.log("Email sent successfully!");
   } catch (error) {
     console.error("Error sending email:", error);
@@ -25,4 +40,3 @@ const sendEmail = async () => {
 };
 
 sendEmail();
-////////
